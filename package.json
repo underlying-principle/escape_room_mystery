@@ -1,0 +1,36 @@
+{
+  "name": "wordshift",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "graph": "tsx scripts/build-word-graph.ts",
+    "validate": "tsx scripts/validate-levels.ts",
+    "levels:search": "tsx scripts/search-levels.ts",
+    "validate:levels": "tsx scripts/validate-signal-levels.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "levels:generate": "tsx scripts/generate-signal-levels.ts"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.176.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.1",
+    "@types/react": "^18.3.20",
+    "@types/react-dom": "^18.3.5",
+    "@types/three": "^0.176.0",
+    "@vitejs/plugin-react": "^4.5.0",
+    "playwright": "^1.63.0",
+    "tsx": "^4.19.2",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
+  }
+}

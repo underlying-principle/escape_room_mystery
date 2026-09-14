@@ -1,0 +1,1258 @@
+/* WORDSHIFT — Signal Level 01 (Cinematic 3D Redesign matching Pic 2) */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #020a10;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.signal-game {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #f5fbff;
+  background: #020a10;
+}
+
+.signal-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.signal-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 45%,
+    rgba(0, 0, 0, 0.35) 75%,
+    rgba(0, 0, 0, 0.78) 100%
+  );
+  z-index: 2;
+}
+
+/* ============================================================
+   TOP HUD (Pic 2: Sleek sci-fi header)
+   ============================================================ */
+
+.signal-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  z-index: 20;
+  background: linear-gradient(180deg, rgba(2, 9, 14, 0.95), rgba(2, 9, 14, 0.4) 80%, transparent 100%);
+  pointer-events: auto;
+}
+
+.home-button,
+.icon-button {
+  appearance: none;
+  border: 1.5px solid rgba(0, 229, 255, 0.42);
+  background: linear-gradient(180deg, rgba(16, 46, 64, 0.9) 0%, rgba(6, 22, 34, 0.98) 100%);
+  color: #c4f4ff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.55),
+    0 0 12px rgba(0, 229, 255, 0.18),
+    inset 0 1px 0 rgba(220, 250, 255, 0.35),
+    inset 0 0 14px rgba(0, 229, 255, 0.08);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.home-button:hover,
+.icon-button:hover {
+  transform: translateY(-2px);
+  border-color: #00f0ff;
+  color: #ffffff;
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.65),
+    0 0 20px rgba(0, 240, 255, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 16px rgba(0, 240, 255, 0.15);
+}
+
+.home-button {
+  width: 42px;
+  height: 42px;
+  font-size: 21px;
+}
+
+.level-label {
+  margin-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.level-number {
+  color: #4ed2e6;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+.game-name {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.header-spacer {
+  flex: 1;
+}
+
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 18px;
+  margin-right: 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(0, 229, 255, 0.35);
+  background: linear-gradient(180deg, rgba(14, 40, 58, 0.88) 0%, rgba(5, 20, 30, 0.96) 100%);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.5),
+    0 0 12px rgba(0, 229, 255, 0.14),
+    inset 0 1px 0 rgba(200, 245, 255, 0.28),
+    inset 0 0 10px rgba(0, 229, 255, 0.06);
+  min-width: 86px;
+}
+
+.stat-title {
+  color: #558a9e;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 2.2px;
+}
+
+.stat-value {
+  color: #f4fdff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+  margin-top: 2px;
+}
+
+.stat-pill.critical .stat-value {
+  color: #ff5274;
+  text-shadow: 0 0 12px rgba(255, 82, 116, 0.7);
+  animation: stat-pulse 0.9s infinite;
+}
+
+@keyframes stat-pulse {
+  50% { opacity: 0.5; }
+}
+
+.icon-button {
+  width: 42px;
+  height: 42px;
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+/* ============================================================
+   TARGET WORDS AREA (Matching Pic 2)
+   ============================================================ */
+
+.target-area {
+  position: absolute;
+  left: 50%;
+  top: 76px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.target-bracket-header {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2px 14px;
+  margin-bottom: 8px;
+}
+
+.target-label {
+  color: #00e5ff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 3.5px;
+  text-shadow: 0 0 12px rgba(0, 229, 255, 0.7);
+}
+
+.target-word-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.target-tile-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid #00e5ff;
+  background: linear-gradient(180deg, rgba(8, 34, 48, 0.9) 0%, rgba(3, 18, 28, 0.96) 100%);
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.38), inset 0 0 12px rgba(0, 229, 255, 0.18);
+}
+
+.target-letter {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 12px #00e5ff;
+}
+
+.target-instructions {
+  margin: 0;
+  text-align: center;
+  color: #9cd4e2;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.35px;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.85);
+}
+
+.target-instructions span {
+  color: #00d2e6;
+}
+
+/* ============================================================
+   3D CUBE INTERACTION OVERLAY (For DOM / test / touch alignment)
+   ============================================================ */
+
+.board-area {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.board-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.22), rgba(0, 140, 200, 0.06) 42%, transparent 70%);
+  filter: blur(28px);
+  pointer-events: none;
+}
+
+.board-glow.victory {
+  background: radial-gradient(circle, rgba(140, 245, 255, 0.45), rgba(0, 190, 255, 0.2) 42%, transparent 72%);
+  animation: glow-flare 1.4s ease-out both;
+}
+
+@keyframes glow-flare {
+  0% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.8); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.18); }
+  100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+}
+
+.signal-board {
+  position: relative;
+  width: 375px;
+  height: 375px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 12px;
+  padding: 6px;
+  pointer-events: auto;
+}
+
+.signal-tile {
+  position: relative;
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+  transition: background 0.15s ease;
+}
+
+/* The 3D scene renders every tile state (hover lift, selected, hinted,
+   matched) on the cubes themselves — this DOM layer is a pure hit area,
+   so it must never paint its own fill or it will misalign with WebGL. */
+.signal-tile:hover,
+.signal-tile.selected,
+.signal-tile.hinted {
+  background: transparent;
+  border-color: transparent;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+.signal-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 84px;
+  transform: translateX(-50%);
+  z-index: 25;
+  padding: 9px 20px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 229, 255, 0.5);
+  background: rgba(2, 14, 22, 0.94);
+  color: #d6f8ff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.28);
+  animation: toast-pop 0.2s ease both;
+}
+
+.signal-toast.error {
+  border-color: rgba(255, 90, 115, 0.65);
+  color: #ffbec8;
+  box-shadow: 0 0 16px rgba(255, 90, 115, 0.35);
+}
+
+@keyframes toast-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+/* ============================================================
+   BOTTOM CONTROLS (Pic 2: Sleek futuristic pill controls)
+   ============================================================ */
+
+.bottom-hud {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.left-controls,
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.hint-pill-button {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(0, 229, 255, 0.48);
+  background: linear-gradient(180deg, rgba(14, 44, 62, 0.92) 0%, rgba(5, 20, 32, 0.98) 100%);
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.6),
+    0 0 16px rgba(0, 229, 255, 0.2),
+    inset 0 1px 0 rgba(220, 250, 255, 0.35),
+    inset 0 0 16px rgba(0, 229, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+}
+
+.hint-pill-button:hover {
+  transform: translateY(-2px);
+  border-color: #00f0ff;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.7),
+    0 0 26px rgba(0, 240, 255, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 20px rgba(0, 240, 255, 0.15);
+}
+
+.hint-bulb-icon {
+  font-size: 20px;
+  filter: drop-shadow(0 0 8px rgba(255, 225, 100, 0.95));
+}
+
+.hint-pill-text {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2.4px;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.45);
+}
+
+.hint-pill-dash {
+  color: #00f0ff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.undo-pill-button {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(0, 229, 255, 0.35);
+  background: linear-gradient(180deg, rgba(12, 36, 52, 0.88) 0%, rgba(4, 18, 28, 0.97) 100%);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.55),
+    0 0 14px rgba(0, 229, 255, 0.14),
+    inset 0 1px 0 rgba(200, 245, 255, 0.3);
+  color: #bceeff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.undo-pill-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #00f0ff;
+  color: #ffffff;
+  box-shadow:
+    0 8px 26px rgba(0, 0, 0, 0.65),
+    0 0 20px rgba(0, 240, 255, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+.undo-pill-button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.control-guide-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 52px;
+  padding: 0 22px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(0, 229, 255, 0.4);
+  background: linear-gradient(180deg, rgba(12, 38, 54, 0.9) 0%, rgba(4, 18, 28, 0.98) 100%);
+  box-shadow:
+    0 6px 22px rgba(0, 0, 0, 0.6),
+    0 0 16px rgba(0, 229, 255, 0.16),
+    inset 0 1px 0 rgba(220, 250, 255, 0.32);
+  pointer-events: none;
+}
+
+.guide-cross-icon {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid #00f0ff;
+  color: #00f0ff;
+  font-size: 15px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5), inset 0 0 6px rgba(0, 240, 255, 0.25);
+}
+
+.guide-text-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-text-stack strong {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+.guide-text-stack small {
+  color: #4ed2e6;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  margin-top: 3px;
+}
+
+.guide-bracket {
+  color: #00e5ff;
+  font-size: 13px;
+  opacity: 0.75;
+  font-weight: 700;
+}
+
+/* ============================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .signal-header {
+    padding: 0 16px;
+  }
+  .bottom-hud {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+  .signal-board {
+    width: min(78vw, 360px);
+    height: min(78vw, 360px);
+  }
+}
+
+@media (max-width: 600px) {
+  .target-area {
+    top: 72px;
+  }
+  .target-tile-box {
+    padding: 6px 12px;
+  }
+  .target-letter {
+    font-size: 18px;
+  }
+  .hint-pill-button,
+  .undo-pill-button,
+  .control-guide-pill {
+    height: 42px;
+    padding: 0 12px;
+  }
+}
+
+/* ============================================================
+   SIGNAL MAP — fixed viewport, pan/zoom, no scrollbars
+   ============================================================ */
+
+.signal-map {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(0, 90, 140, 0.14), transparent 40%),
+    radial-gradient(circle at 75% 70%, rgba(0, 130, 180, 0.1), transparent 45%),
+    #020a10;
+  z-index: 1;
+  user-select: none;
+}
+
+.signal-map:active { cursor: grabbing; }
+
+.map-world { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+
+.map-paths { position: absolute; left: -600px; top: -900px; pointer-events: none; }
+.path-active { filter: drop-shadow(0 0 6px rgba(80, 220, 255, 0.6)); }
+
+.map-region-label {
+  position: absolute;
+  width: 640px;
+  text-align: center;
+  pointer-events: none;
+  color: var(--accent, #4ee1ff);
+}
+.map-region-label small { display: block; font-size: 12.6px; letter-spacing: 4px; opacity: 0.75; }
+.map-region-label strong { display: block; font-size: 36.4px; letter-spacing: 5px; margin: 5px 0; text-shadow: 0 0 24px rgba(80, 210, 255, 0.35); }
+.map-region-label span { display: block; font-size: 12.6px; letter-spacing: 2.5px; opacity: 0.55; }
+
+/* Per-world ambient color — enormous soft radial fields that overlap so the
+   eye glides between worlds without ever meeting an edge. */
+.map-bg { position: absolute; inset: 0; pointer-events: none; }
+.map-bg-blob {
+  position: absolute;
+  width: 3000px;
+  height: 2300px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--blob, #4ee1ff) 11%, transparent),
+    color-mix(in srgb, var(--blob, #4ee1ff) 6.5%, transparent) 40%,
+    color-mix(in srgb, var(--blob, #4ee1ff) 3%, transparent) 60%,
+    color-mix(in srgb, var(--blob, #4ee1ff) 1%, transparent) 74%,
+    transparent 86%
+  );
+}
+
+.map-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent, #4ee1ff), transparent 25%);
+  background: #061420;
+  color: #d8f4ff;
+  font: 800 13px "Space Mono", monospace;
+  cursor: pointer;
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+/* Premium hover: soft light wells up from behind, the node lifts, and a
+   thin ring ping expands past the rim. */
+.map-node::before {
+  content: "";
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent, #4ee1ff) 30%, transparent), transparent 68%);
+  opacity: 0;
+  transform: scale(0.55);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.map-node::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent, #4ee1ff), transparent 30%);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.32s ease, transform 0.46s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.map-node:hover:not(.locked) {
+  transform: translate(-50%, -50%) scale(1.09);
+  border-color: var(--accent, #4ee1ff);
+  background: color-mix(in srgb, var(--accent, #4ee1ff), #061420 68%);
+  box-shadow:
+    0 0 28px color-mix(in srgb, var(--accent, #4ee1ff), transparent 55%),
+    inset 0 0 16px color-mix(in srgb, var(--accent, #4ee1ff), transparent 78%);
+}
+.map-node:hover:not(.locked)::before { opacity: 1; transform: scale(1); }
+.map-node:hover:not(.locked)::after { opacity: 1; transform: scale(1.4); }
+.map-node:hover:not(.locked) b { text-shadow: 0 0 12px var(--accent, #4ee1ff); }
+.map-node.complete { background: color-mix(in srgb, var(--accent, #4ee1ff), #061420 72%); }
+.map-node.locked { opacity: 0.28; cursor: not-allowed; filter: grayscale(1); }
+.map-node.gate { width: 62px; height: 62px; border-width: 2px; }
+/* The player's current level — the only node with the circling orbit. */
+.node-current-ring { position: absolute; inset: -9px; border: 1px dashed var(--accent); border-radius: 50%; opacity: 0.75; animation: gate-spin 9s linear infinite; pointer-events: none; }
+@keyframes gate-spin { to { transform: rotate(360deg); } }
+.node-stars { position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--accent); white-space: nowrap; }
+
+.map-card {
+  position: fixed;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  width: min(420px, calc(100vw - 28px));
+  padding: 18px 20px 16px;
+  border: 1px solid rgba(80, 210, 255, 0.35);
+  background: rgba(4, 14, 22, 0.96);
+  z-index: 30;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: card-up 0.18s ease both;
+}
+@keyframes card-up { from { opacity: 0; transform: translate(-50%, 10px); } }
+.map-card small { color: #56d4eb; font-size: 8px; letter-spacing: 2.4px; font-weight: 800; }
+.map-card strong { display: block; margin: 5px 0 3px; font-size: 21px; letter-spacing: 0.5px; color: #eaf8fc; }
+.map-card p { margin: 0 0 10px; color: #76949e; font-size: 11px; }
+.map-card-stats { display: flex; flex-wrap: wrap; gap: 5px 16px; margin-bottom: 12px; color: #6f8d99; font-size: 9px; letter-spacing: 1.4px; font-weight: 700; }
+.map-card-stars { color: #ffd76e; font-size: 13px; letter-spacing: 2px; }
+.map-card .primary { width: 100%; height: 42px; border: 0; background: #37d6f2; color: #04141c; font-weight: 900; letter-spacing: 1.6px; cursor: pointer; }
+.map-card-close { position: absolute; right: 6px; top: 4px; background: none; border: 0; color: #5f7d89; font-size: 22px; cursor: pointer; }
+
+.map-footer,
+.signal-map .map-footer {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  width: 100%; /* the old ladder stylesheet caps .map-footer at 920px — out-specific it */
+  margin-top: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  font: 700 8px "Space Mono", monospace;
+  letter-spacing: 1.6px;
+  color: #52707c;
+  border-top: 1px solid rgba(77, 228, 255, 0.12);
+  background: rgba(2, 8, 12, 0.85);
+  z-index: 20;
+  pointer-events: none;
+}
+.map-footer b { color: #bfefff; }
+
+/* Glyphs */
+.glyph-svg { width: 1em; height: 1em; vertical-align: -0.12em; }
+.target-kind { display: block; margin-top: 3px; font-size: 6.5px; letter-spacing: 1.6px; color: #4d7080; font-weight: 800; }
+.target-tile-box { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
+/* Horizontal letter rows inside target chips (never vertical stacks) */
+.target-letters { display: flex; align-items: center; justify-content: center; gap: 3px; }
+.target-letter { display: flex; align-items: center; justify-content: center; min-width: 20px; }
+.target-letter .glyph-svg { width: 20px; height: 20px; }
+.target-word-row { flex-wrap: wrap; justify-content: center; max-width: 92vw; }
+
+/* The wander letter refuses to sit still — mark it in the chips too. */
+.target-letter.wander {
+  color: #ffb8ef;
+  text-shadow: 0 0 12px #ff5ce1;
+  animation: wander-pulse 1.6s ease-in-out infinite;
+}
+.target-letter.wander .glyph-svg path { stroke: #ffb8ef; filter: drop-shadow(0 0 4px #ff5ce1); }
+@keyframes wander-pulse { 50% { opacity: 0.6; } }
+
+/* ============================================================
+   WIN / PAUSE / GAME-OVER PANELS — the shared styles.css rules
+   hang off a --world variable the game screen never defined,
+   which rendered the primary button black-on-black and drained
+   the earned stars. Define it once here.
+   ============================================================ */
+
+.game-screen { --world: #37d6f2; }
+
+.complete-panel .result-stars .earned {
+  color: #ffd76e;
+  text-shadow: 0 0 22px rgba(255, 215, 110, 0.85);
+}
+
+/* Win-panel actions: REPLAY + NEXT side by side (NEXT is the decorated
+   progression button), MAP centered below. Text 2x the old 8px actions. */
+.win-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.win-actions .modal-actions { margin-top: 0; gap: 14px; }
+.win-actions button {
+  font: 900 16px "Space Mono", monospace;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.win-actions .replay-action {
+  padding: 10px 18px;
+  border: 1px solid rgba(80, 210, 255, 0.45);
+  background: rgba(6, 22, 34, 0.85);
+  color: #bfefff;
+}
+.win-actions .replay-action:hover { border-color: #37d6f2; color: #ffffff; }
+.win-actions .next-action {
+  padding: 10px 24px;
+  border: 1px solid #4fe3ff;
+  background: linear-gradient(180deg, #45e1ff, #14b4de);
+  color: #04141c;
+  text-shadow: none;
+  box-shadow: 0 0 26px rgba(55, 214, 242, 0.55);
+  animation: next-glow 2.2s ease-in-out infinite;
+}
+.win-actions .next-action:hover { filter: brightness(1.12); }
+.win-actions .next-action span { margin-left: 6px; }
+@keyframes next-glow {
+  50% { box-shadow: 0 0 40px rgba(55, 214, 242, 0.85); }
+}
+.win-actions .map-action {
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: #7fa2b0;
+}
+.win-actions .map-action:hover { color: #dff6ff; }
+
+/* ============================================================
+   DAILY SPIN WHEEL — global crystal chip + roulette modal
+   ============================================================ */
+
+.crystal-chip {
+  position: fixed;
+  left: 10px;
+  top: 10px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 10px 0 8px;
+  border-radius: 19px;
+  border: 1.5px solid rgba(80, 190, 255, 0.5);
+  background: linear-gradient(180deg, rgba(10, 30, 48, 0.95), rgba(4, 14, 24, 0.98));
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 16px rgba(60, 170, 255, 0.25), inset 0 1px 0 rgba(210, 245, 255, 0.3);
+  color: #eaf7ff;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease;
+}
+.crystal-chip:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 24px rgba(70, 190, 255, 0.4); }
+.crystal-chip b { font: 800 16px "Space Mono", monospace; letter-spacing: 1px; text-shadow: 0 0 10px rgba(90, 200, 255, 0.8); }
+.chip-plus {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #4fd08a;
+  background: radial-gradient(circle at 35% 30%, #7fe8b2, #2ca45f);
+  color: #052713;
+  font: 900 14px/1 "Space Mono", monospace;
+  box-shadow: 0 0 10px rgba(80, 220, 140, 0.6);
+}
+
+/* Room for the chip and the gear on game screens: HUD sits between them. */
+.game-screen .signal-header { padding-left: 138px; padding-right: 148px; }
+
+/* Gear — global settings entry, top right. */
+.gear-button {
+  position: fixed;
+  right: 10px;
+  top: 10px;
+  z-index: 60;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(80, 190, 255, 0.5);
+  background: linear-gradient(180deg, rgba(10, 30, 48, 0.95), rgba(4, 14, 24, 0.98));
+  color: #bfe6ff;
+  font-size: 19px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 16px rgba(60, 170, 255, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.2s ease;
+}
+.gear-button:hover { transform: rotate(60deg); box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65), 0 0 24px rgba(70, 190, 255, 0.45); }
+
+.spin-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  /* Frosted glass projected WITHOUT blur filters: a cool light wash, two soft
+     light blooms, and a fine film-grain tile read as diffused glass. */
+  background:
+    radial-gradient(1300px 760px at 22% -6%, rgba(170, 215, 255, 0.17), transparent 62%),
+    radial-gradient(1100px 640px at 82% 106%, rgba(120, 185, 255, 0.13), transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E") repeat,
+    linear-gradient(180deg, rgba(150, 190, 225, 0.12), rgba(45, 70, 100, 0.2));
+}
+.spin-panel {
+  position: relative;
+  width: min(500px, calc(100vw - 24px));
+  padding: 42px 34px 30px;
+  text-align: center;
+  border: 1px solid rgba(90, 190, 255, 0.4);
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(12, 38, 60, 0.97), rgba(4, 13, 22, 0.99) 55%);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8), 0 0 60px rgba(50, 160, 255, 0.18), inset 0 1px 0 rgba(210, 245, 255, 0.16);
+}
+.spin-close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(6, 20, 32, 0.9);
+  color: #9cc8dd;
+  font-size: 15px;
+  cursor: pointer;
+}
+.spin-close:hover { color: #fff; }
+.spin-kicker { color: #56d4eb; font: 800 9px "Space Mono", monospace; letter-spacing: 3px; }
+
+/* --- The wheel: rim, bulbs, disc, slices, gloss, pointer, hub --- */
+.spin-rig { position: relative; width: 344px; height: 344px; margin: 30px auto 12px; }
+.spin-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 25%, rgba(140, 210, 255, 0.35), transparent 45%),
+    conic-gradient(from 210deg, #1c3f6e, #2b5da0 22%, #14294a 48%, #2b5da0 74%, #1c3f6e);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(60, 160, 255, 0.35),
+    inset 0 3px 8px rgba(190, 235, 255, 0.4),
+    inset 0 -6px 14px rgba(0, 10, 25, 0.8);
+}
+.spin-bulb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: #ffe9a8;
+  box-shadow: 0 0 8px rgba(255, 224, 130, 0.9);
+  opacity: 0.22;
+  /* Random per-bulb delay/duration is set inline — sparks fire one after
+     another in a scattered rhythm, never synchronized. */
+  animation: bulb-spark 3s ease-in-out infinite;
+}
+@keyframes bulb-spark {
+  0%, 78%, 100% { opacity: 0.22; box-shadow: 0 0 3px rgba(255, 224, 130, 0.35); }
+  86% { opacity: 1; box-shadow: 0 0 14px rgba(255, 232, 160, 1); background: #fff6d8; }
+  93% { opacity: 0.55; }
+}
+
+.spin-disc {
+  position: absolute;
+  inset: 24px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -22.5deg,
+    #7a3fd1 0deg 45deg,
+    #1f8fd6 45deg 90deg,
+    #d6483f 90deg 135deg,
+    #2fae7f 135deg 180deg,
+    #8a2fb8 180deg 225deg,
+    #f2a13c 225deg 270deg,
+    #d64f86 270deg 315deg,
+    #2b5fc9 315deg 360deg
+  );
+  box-shadow:
+    0 0 0 3px rgba(8, 20, 36, 0.9),
+    0 10px 30px rgba(0, 0, 0, 0.65),
+    inset 0 0 26px rgba(0, 0, 0, 0.35);
+  transition: transform 4.4s cubic-bezier(0.12, 0.72, 0.08, 1);
+}
+.spinning .spin-disc { filter: saturate(1.25) brightness(1.08); }
+.spin-slice {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+.spin-slice-inner {
+  position: absolute;
+  left: -42px;
+  top: -142px;
+  width: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
+}
+.spin-slice-inner b { color: #ffffff; font: 900 17px "Space Mono", monospace; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 255, 255, 0.25); }
+.spin-slice.won .spin-slice-inner { animation: slice-won 0.9s ease-in-out 2; }
+@keyframes slice-won { 50% { transform: scale(1.35); filter: brightness(1.6) drop-shadow(0 0 10px #fff); } }
+.spin-gloss {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.06) 34%, transparent 55%),
+    radial-gradient(circle at 50% 118%, rgba(0, 0, 0, 0.5), transparent 46%);
+  pointer-events: none;
+}
+.spin-pointer {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 46px;
+  z-index: 3;
+  background: radial-gradient(circle at 50% 28%, #ffe9a8, #f2b23c 55%, #a86a12);
+  clip-path: polygon(50% 100%, 0 26%, 22% 0, 78% 0, 100% 26%);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 10px rgba(255, 200, 90, 0.65));
+}
+.spin-hub {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64px;
+  height: 64px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 2;
+  background: radial-gradient(circle at 38% 30%, #ffe9a8, #f2b23c 52%, #8a5410 92%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7), 0 0 22px rgba(255, 200, 100, 0.55), inset 0 -4px 8px rgba(120, 60, 0, 0.55);
+}
+
+/* --- Dots, pill button with the rewarded-video section --- */
+.spin-dots { display: flex; justify-content: center; gap: 7px; margin: 4px 0 8px; }
+.spin-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #14314c;
+  border: 1px solid rgba(90, 190, 255, 0.35);
+}
+.spin-dots i.lit { background: radial-gradient(circle at 35% 30%, #bfe9ff, #2f9fe8); box-shadow: 0 0 8px rgba(80, 200, 255, 0.8); }
+.spin-actions { display: flex; justify-content: center; }
+.spin-pill {
+  display: flex;
+  align-items: stretch;
+  height: 52px;
+  border-radius: 26px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #7ce8a2, #2ca45f 55%, #1d7f47);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 24px rgba(60, 220, 130, 0.35), inset 0 2px 0 rgba(240, 255, 245, 0.55);
+}
+.spin-button {
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font: 900 20px "Space Mono", monospace;
+  letter-spacing: 3px;
+  padding: 0 30px;
+  cursor: pointer;
+  text-shadow: 0 2px 5px rgba(0, 60, 25, 0.6);
+}
+.spin-button:disabled { cursor: default; filter: grayscale(0.55) brightness(0.75); }
+.spin-button:not(:disabled):hover { filter: brightness(1.1); }
+.spin-ad-button {
+  position: relative;
+  border: 0;
+  border-left: 2px solid rgba(6, 60, 30, 0.45);
+  background: rgba(9, 92, 48, 0.55);
+  color: #ffffff;
+  width: 62px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.spin-ad-button:disabled { cursor: default; filter: grayscale(0.5) brightness(0.8); }
+.spin-ad-button:not(:disabled):hover { background: rgba(12, 112, 58, 0.75); }
+.spin-ad-badge {
+  position: absolute;
+  right: 4px;
+  top: 3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: #e5484d;
+  color: #fff;
+  font: 900 11px/18px "Space Mono", monospace;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.spin-status { margin: 12px 0 0; color: #8fd4a8; font: 700 9px "Space Mono", monospace; letter-spacing: 2px; }
+.spin-status.waiting { color: #6f8d99; }
+.spin-message { margin: 6px 0 0; color: #56d4eb; font: 800 10px "Space Mono", monospace; letter-spacing: 2px; animation: slice-won 0.6s ease; }
+
+/* ============================================================
+   SETTINGS — global gear menu (top right)
+   ============================================================ */
+
+.set-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: grid;
+  place-items: center;
+  /* Same projected frosted glass as the wheel — no blur filters. */
+  background:
+    radial-gradient(1300px 760px at 78% -6%, rgba(170, 215, 255, 0.16), transparent 62%),
+    radial-gradient(1100px 640px at 18% 106%, rgba(120, 185, 255, 0.12), transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.16'/%3E%3C/svg%3E") repeat,
+    linear-gradient(180deg, rgba(150, 190, 225, 0.12), rgba(45, 70, 100, 0.2));
+}
+.set-panel {
+  position: relative;
+  width: min(430px, calc(100vw - 24px));
+  padding: 40px 28px 34px;
+  text-align: center;
+  border: 1px solid rgba(90, 190, 255, 0.4);
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(12, 38, 60, 0.97), rgba(4, 13, 22, 0.99) 55%);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8), 0 0 60px rgba(50, 160, 255, 0.18), inset 0 1px 0 rgba(210, 245, 255, 0.16);
+}
+.set-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(6, 20, 32, 0.9);
+  color: #9cc8dd;
+  font-size: 15px;
+  cursor: pointer;
+}
+.set-close:hover { color: #fff; }
+.set-title { margin: 0 0 18px; color: #eaf8fc; font-size: 26px; font-weight: 400; letter-spacing: 1px; }
+.set-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+.set-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 13px 6px 10px;
+  border: 1.5px solid rgba(80, 190, 255, 0.35);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(14, 44, 68, 0.9), rgba(6, 20, 33, 0.96));
+  color: #cfeaff;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+.set-tile:hover { transform: translateY(-2px); border-color: #37d6f2; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 18px rgba(55, 214, 242, 0.3); }
+.set-glyph { font-size: 24px; line-height: 1; }
+.set-glyph.on { text-shadow: 0 0 14px rgba(80, 220, 255, 0.9); }
+.set-tile small { color: #8fb6c6; font: 700 9px "Space Mono", monospace; letter-spacing: 1.6px; }
+
+.set-speed { margin: 0 0 18px; }
+.set-speed small { display: block; margin-bottom: 8px; color: #9cc8dd; font: 700 11px "Space Mono", monospace; letter-spacing: 2px; }
+.set-speed input[type="range"] { width: 100%; accent-color: #37d6f2; cursor: pointer; }
+.set-speed-labels { display: flex; justify-content: space-between; margin-top: 4px; padding: 0 4px; }
+.set-speed-labels span { color: #52707c; font: 700 10px "Space Mono", monospace; }
+.set-speed-labels span.on { color: #56d4eb; text-shadow: 0 0 10px rgba(86, 212, 235, 0.7); }
+
+.set-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 12px; flex-wrap: wrap; }
+.set-action {
+  padding: 11px 18px;
+  border: 1.5px solid rgba(80, 190, 255, 0.4);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(14, 44, 68, 0.9), rgba(6, 20, 33, 0.96));
+  color: #dff4ff;
+  font: 800 12px "Space Mono", monospace;
+  letter-spacing: 1.4px;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+.set-action:hover { transform: translateY(-2px); border-color: #37d6f2; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 18px rgba(55, 214, 242, 0.3); }
+.set-action.official { border-color: rgba(255, 205, 90, 0.55); color: #ffe9b0; }
+.set-action.official:hover { border-color: #ffd76e; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 18px rgba(255, 205, 90, 0.35); }
+.set-action.danger { border-color: rgba(229, 72, 77, 0.6); color: #ffc9ca; }
+.set-action.danger:hover { border-color: #e5484d; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 18px rgba(229, 72, 77, 0.35); }
+.set-version { display: block; text-align: right; color: #52707c; font: 700 10px "Space Mono", monospace; letter-spacing: 1.6px; }
+
+.set-sub-body { margin-bottom: 18px; }
+.set-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 9px;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(80, 190, 255, 0.35);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(14, 44, 68, 0.9), rgba(6, 20, 33, 0.96));
+  color: #cfeaff;
+  font: 700 12px "Space Mono", monospace;
+  letter-spacing: 1.2px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.set-line:hover:not(:disabled) { border-color: #37d6f2; }
+.set-line.on { border-color: #37d6f2; box-shadow: 0 0 16px rgba(55, 214, 242, 0.25); }
+.set-line:disabled { opacity: 0.45; cursor: default; }
+.set-line i { color: #52707c; font: 700 9px "Space Mono", monospace; letter-spacing: 2px; font-style: normal; }
+.set-line.on i { color: #56d4eb; }
+.set-prose { margin: 0 0 6px; color: #a9cbdc; font: 400 12.5px/1.75 "Space Mono", monospace; }
+.set-prose b { color: #eaf8fc; }
+
+/* ============================================================
+   LEVEL-RESCUE WEAPONS — global vertical stack, middle-right
+   ============================================================ */
+
+.weapon-bar {
+  position: fixed;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 55;
+}
+.weapon {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(80, 190, 255, 0.45);
+  background: linear-gradient(180deg, rgba(16, 46, 64, 0.92), rgba(6, 22, 34, 0.98));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55), 0 0 12px rgba(0, 229, 255, 0.15), inset 0 1px 0 rgba(220, 250, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+.weapon:hover { transform: translateY(-3px); border-color: #37d6f2; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.6), 0 0 20px rgba(55, 214, 242, 0.4); }
+.weapon-glyph { font-size: 24px; line-height: 1; }
+.weapon.armed {
+  border-color: #ffd76e;
+  box-shadow: 0 0 24px rgba(255, 215, 110, 0.7), inset 0 0 14px rgba(255, 215, 110, 0.25);
+  animation: weapon-armed 1.2s ease-in-out infinite;
+}
+@keyframes weapon-armed { 50% { transform: translateY(-4px); } }
+.weapon-count {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: #37d6f2;
+  color: #04141c;
+  font: 900 12px/20px "Space Mono", monospace;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+.weapon-price {
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  padding: 2px 6px;
+  border-radius: 9px;
+  background: #0a3a2a;
+  border: 1px solid #4fd08a;
+  color: #7fe8b2;
+  font: 900 9px/1.4 "Space Mono", monospace;
+  white-space: nowrap;
+}
+.weapon-price.poor { border-color: rgba(229, 72, 77, 0.7); color: #ff9da0; background: #3a0e12; }
+.weapon.locked { filter: saturate(0.6); }
